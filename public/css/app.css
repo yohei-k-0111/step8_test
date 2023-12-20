@@ -1,0 +1,118 @@
+@charset "utf-8";
+
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration-line: none;
+  list-style-type: none;
+}
+body {
+  font-family: "平成丸ゴシック Std","游ゴシック", YuGothic, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ",
+  "Meiryo", sans-serif;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: #5e3939;
+  background-color: #eae3e3;
+}
+
+img {
+  border: none;
+  display: block;
+  width: 200px;
+}
+
+h1, h2, h2, h3, h5, h6 {
+  font-size: 100%;
+}
+
+#app {
+  background-color: aliceblue;
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 70px;
+}
+
+.navbar {
+  padding: 10px 0px;
+  width: 100%;
+  height: 70px;
+}
+
+.navbar__container {
+  width: 100%;
+  height: 100%;
+}
+
+.navbar__container--brand {
+  width: 200px;
+  padding-top: 12px;
+  padding-bottom: 13px;
+  margin-left: 5px;
+  float: left;
+  font-size: 25px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.navbar__container--menu {
+  margin-right: 5px;
+  width: 180px;
+  float: right;
+}
+
+.nav__item--login-name {
+  color: #000000;
+  font-weight: bold;
+}
+
+.nav__item--bottom {
+  margin-top: 15px;
+}
+
+main {
+  clear: both;
+  margin: 20px 0px;
+}
+
+h1 {
+  color: #000000;
+  font-size: 30px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+.btn {
+  background-color: rgb(115, 183, 210);
+  color: #ffffff;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 10px 12px;
+  border-width: 0;
+  border-radius: 4px;
+  width: auto;
+}
+
+.form {
+  box-sizing: border-box;
+  border-width: 2px;
+  border-color: #000000;
+  height: 35px;
+  margin-top: 7px;
+  border-radius: 3px;
+}
+
+.return {
+  width: 56px;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}

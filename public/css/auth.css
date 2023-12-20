@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+.login-item, .regist-item {
+  margin-bottom: 10px;
+}
+
+.home-item {
+  margin-bottom: 30px;
+}
+
+.login-item__form--input, .regist-item__form--input {
+  width: 300px;
+}
