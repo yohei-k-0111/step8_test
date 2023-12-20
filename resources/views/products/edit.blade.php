@@ -5,6 +5,12 @@
         <div class="card">
             <div class="card-header"><h2>商品情報を変更する</h2></div>
 
+@if (session('edt_message'))
+    <div class="alert alert__info">
+        {{ session('edt_message') }}
+    </div>
+@endif
+
             <div class="card-body">
                 <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">
                     @csrf

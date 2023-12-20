@@ -4,16 +4,16 @@
 <div class="container">
     <h1>商品情報一覧画面</h1>
 
-@if (session('crt_message'))
+<!-- @if (session('crt_message'))
     <div class="alert alert__success">
         {{ session('crt_message') }}
     </div>
-@endif
-@if (session('edt_message'))
+@endif -->
+<!-- @if (session('edt_message'))
     <div class="alert alert__info">
         {{ session('edt_message') }}
     </div>
-@endif
+@endif -->
 @if (session('dlt_message'))
         <div class="alert alert__danger">
             {{ session('dlt_message') }}

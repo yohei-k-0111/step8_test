@@ -4,6 +4,12 @@
 <div class="container">
     <h1>商品新規登録</h1>
 
+@if (session('crt_message'))
+    <div class="alert alert__success">
+        {{ session('crt_message') }}
+    </div>
+@endif
+
     <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="crt-item">

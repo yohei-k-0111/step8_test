@@ -44,7 +44,9 @@ class ProductController extends Controller
         $product = new Product;
         $products = $product->getStore($request);
         // 処理後に商品一覧画面にリダイレクトする。
-        return redirect('products')->with('crt_message', '商品情報が登録されました');
+        $companies = Company::all();
+        return redirect()->route('products.create', compact('companies'))->with('crt_message',
+         '商品情報が登録されました');
     }
 
     /**
@@ -92,7 +94,10 @@ class ProductController extends Controller
         $products = $product->getUpdate($request, $id);
 
         // 処理後、商品一覧画面にリダイレクトする。
-        return redirect()->route('products.index')->with('edt_message', '商品情報が更新されました');
+        $product = Product::find($id); 
+        $companies = Company::all();
+        return redirect()->route('products.edit', compact('product', 'companies'))->with('edt_message',
+         '商品情報が更新されました');
     }
 
     /**
