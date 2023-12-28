@@ -54,16 +54,6 @@ class Product extends Model
     // ProductController の　public function store(Request $request)メソッドの内容
     // 送られたデータをデータベースに保存する
     public function getStore($request) {
-        // リクエストを確認して、必要な情報が全て揃っているかチェック
-        $request->validate([
-            'product_name' => 'required',
-            'company_id' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'comment' => 'nullable', // 未入力でもOK
-            'img_path' => 'nullable|image|max:2048', // 未入力でもOK,画像ファイルであること,サイズ2048KB(2MB)まで
-        ]);
-        //バリデーションによりフォームに未入力項目があればエラーメッセー発生させる（未入力です　など）
 
         // リクエストから情報を取得し新しく商品情報を作成する
         $product = new Product([
@@ -89,16 +79,6 @@ class Product extends Model
 
     // ProductController の　public function update(Request $request, $id)メソッドの内容
     public function getUpdate($request, $id) {
-         // リクエストを確認し必要な情報が全て揃っているかチェック
-         $request->validate([
-            'product_name' => 'required',
-            'company_id' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'comment' => 'nullable', // 未入力でもOK
-            'img_path' => 'nullable|image|max:2048', // 未入力でもOK,画像ファイルであること,サイズ2048KB(2MB)まで
-        ]);
-        //バリデーションによりフォームに未入力項目があればエラーメッセー発生させる（未入力です　など）
         
         // テーブルを指定し、idで商品を検索する。
         $product = Product::find($id); 

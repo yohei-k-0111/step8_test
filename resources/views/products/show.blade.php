@@ -3,10 +3,6 @@
 @section('content')
 <div class="container">
     <h1 id="showTitle">商品情報詳細</h1>
-    <!-- <?php
-    var_dump($product->company_id);
-    var_dump($product->company_name);
-    ?> -->
         <dl class="show-list">
             <dt class="show-list__label">商品情報ID</dt>
             <dd class="show-list__info">{{ $product->id }}</dd>

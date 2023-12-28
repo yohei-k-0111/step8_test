@@ -9,16 +9,12 @@
 
     <title>{{ config('app.name', '商品管理システム') }}</title>
 
-    <!-- Fonts -->
-    <!-- <link rel="dns-prefetch" href="//fonts.bunny.net"> -->
-    <!-- <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> -->
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
     <link rel="stylesheet" href="{{ asset('css/product.css') }}">
 
-    <!-- Scripts -->
-    <!-- @vite(['resources/sass/app.scss', 'resources/js/app.js']) -->
 </head>
 <body>
     <div id="app">

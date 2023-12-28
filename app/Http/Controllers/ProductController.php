@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 // Requestクラスはブラウザに表示させるフォームから送信されたデータをコントローラのメソッドで引数として受け取る。
 use App\Models\Product; // Productモデルをこのファイルで使用する。
 use App\Models\Company; // Companyモデルをこのファイルで使用する。
+use Illuminate\Support\Facades\DB; // try-catch構文で追加
+
 
 class ProductController extends Controller
 {
@@ -26,6 +28,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // 商品作成画面を表示するメソッド
     public function create() {
         // 全ての会社の情報を取得する。
         $companies = Company::all();
@@ -39,10 +42,32 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    // 送られたデータをデータベースに保存するメソッド
+    // 商品作成画面から送られたデータをデータベースに保存するメソッド（商品情報新規作成）
     public function store(Request $request) {
-        $product = new Product;
-        $products = $product->getStore($request);
+
+        // リクエストを確認して、必要な情報が全て揃っているかチェック（バリデーション）
+        $request->validate([
+            'product_name' => 'required',
+            'company_id' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+            'comment' => 'nullable', // 未入力でもOK
+            'img_path' => 'nullable|image|max:2048', // 未入力でもOK,画像ファイルであること,サイズ2048KB(2MB)まで
+        ]);
+        
+        // トランザクション開始
+        DB::beginTransaction();
+
+        try {
+            // 登録処理呼び出し
+            $product = new Product;
+            $products = $product->getStore($request);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
+
         // 処理後に商品一覧画面にリダイレクトする。
         $companies = Company::all();
         return redirect()->route('products.create', compact('companies'))->with('crt_message',
@@ -55,7 +80,8 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // (Product $product) 指定されたIDで商品をデータベースから自動的に検索し、その結果を $product に割り当てる。
+    // 商品詳細画面を表示するメソッド
+    // 指定されたIDで商品をデータベースから自動的に検索し、その結果を $product に割り当てる。
     public function show($id) {
         // テーブルを指定しidで商品を検索する。
         $product = Product::find($id);
@@ -71,6 +97,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // 商品編集画面を表示するメソッド
     public function edit($id) {
         // テーブルを指定し、idで商品を検索する。
         $product = Product::find($id); 
@@ -88,11 +115,32 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // 商品編集画面から送信されたデータをデータベースに保存するメソッド（商品情報更新）
     public function update(Request $request, $id) {
 
-        $product = new Product;
-        $products = $product->getUpdate($request, $id);
+        // リクエストを確認し必要な情報が全て揃っているかチェック（バリデーション）
+        $request->validate([
+        'product_name' => 'required',
+        'company_id' => 'required',
+        'price' => 'required',
+        'stock' => 'required',
+        'comment' => 'nullable', // 未入力でもOK
+        'img_path' => 'nullable|image|max:2048', // 未入力でもOK,画像ファイルであること,サイズ2048KB(2MB)まで
+        ]);
 
+        // トランザクション開始
+        DB::beginTransaction();
+
+        try {
+            // 更新処理呼び出し
+            $product = new Product;
+            $products = $product->getUpdate($request, $id);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
+        
         // 処理後、商品一覧画面にリダイレクトする。
         $product = Product::find($id); 
         $companies = Company::all();
@@ -106,12 +154,24 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    //(Product $product) 指定されたIDで商品をデータベースから検索し、その結果を $product に割り当てる。
+    // 商品情報を削除するメソッド
+    //指定されたIDで商品をデータベースから検索し、その結果を $product に割り当てる。
     public function destroy($id) {
-        // テーブルを指定し、idで商品を検索する。
-        $product = Product::find($id);
-        // 商品削除
-        $product->delete();
+
+        // トランザクション開始
+        DB::beginTransaction();
+
+        try {
+            // 削除処理呼び出し
+           // テーブルを指定し、idで商品を検索する。
+            $product = Product::find($id);
+            // 商品削除
+            $product->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back();
+        }
 
         // 処理後、商品一覧画面に戻る。
         return redirect('/products')->with('dlt_message', '商品情報が削除されました');

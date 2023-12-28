@@ -4,16 +4,6 @@
 <div class="container">
     <h1>商品情報一覧画面</h1>
 
-<!-- @if (session('crt_message'))
-    <div class="alert alert__success">
-        {{ session('crt_message') }}
-    </div>
-@endif -->
-<!-- @if (session('edt_message'))
-    <div class="alert alert__info">
-        {{ session('edt_message') }}
-    </div>
-@endif -->
 @if (session('dlt_message'))
         <div class="alert alert__danger">
             {{ session('dlt_message') }}
@@ -51,9 +41,6 @@
     <!-- 検索条件リセットボタン -->
     <a href="{{ route('products.index') }}" class="btn">検索条件を元に戻す</a>
 
-    <?php
-    //  var_dump($_GET);
-    ?>
     <!-- 商品情報一覧 -->
     <div class="products">
         <h2>商品情報</h2>
