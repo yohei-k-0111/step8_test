@@ -7,6 +7,10 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <!-- <script src="{{ asset('js/search.js') }}"></script> -->
+
     <title>{{ config('app.name', '商品管理システム') }}</title>
 
     <!-- CSS -->
@@ -61,5 +65,41 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        $.ajaxSetup({
+
+            headers: { 'X-CSRF-TOKEN': $("[name='csrf-token']").attr("content") },
+
+        })
+
+        $('#btnSearchItem').on('click', function() {
+
+            e.preventDefault(); //追加 これまでの通常処理をキャンセル
+            var searchWord = $(#txtSearchProduct).val(); //$('#txtSearchProduct')id指定でもできそう
+
+            $.ajax({
+
+                url: "{{ route('products.index') }}",
+                method: "GET",
+                data: { 'searchWord' : searchWord }, //サーバーに送りたいデータ：検索入力値（valueの中身をvar変数に置き換えた）
+                dataType: "json",
+
+            }).done(function(res){
+
+                dump($res.products);
+                console.log($res.products);
+
+            }).faile(function(){
+
+                alert('通信が失敗しました');
+
+            });
+
+        });
+
+        // 今回は、bladeファイル内に記述してるのでroute()関数が使用できますが、jsファイルに区別して記述する場合もあります。
+        // その場合は、route()関数は使用できないので、別の方法でURLを渡す必要があるので注意してください。
+    </script>
 </body>
 </html>

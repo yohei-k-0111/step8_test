@@ -28,7 +28,7 @@ Route::get('/', function () {
         // ログイン状態でなければログイン画面へリダイレクト
         return redirect()->route('login');
     }
-});
+})->name('products.index');
 
 Auth::routes();
 

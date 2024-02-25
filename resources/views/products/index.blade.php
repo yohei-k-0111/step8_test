@@ -23,14 +23,14 @@
                 <input id="txtSearchProduct" class="form search__item--form" type="text" name="search"
                 placeholder="商品名" value="{{ request('search') }}">
             </div>
-            <div class="search__item">
+            <!-- <div class="search__item">
                 <select id="drpSearchCompany" class="form search__item--form"name="select">
                     <option value="">メーカー選択</option>
                 @foreach($companies as $company)
                     <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                 @endforeach
                 </select>
-            </div>
+            </div> -->
             <!-- 絞り込みボタン -->
             <div class="search__item">
                 <button id="btnSearchItem" class="btn search__item--btn" type="submit">絞り込み</button>

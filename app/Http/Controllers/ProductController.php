@@ -20,7 +20,7 @@ class ProductController extends Controller
         $product = new Product;
         $products = $product->getIndex($request);
         $companies = Company::all();
-        return view('products.index', compact('companies', 'products'));
+        return response()->json(['products' => $products]);
     }
 
     /**
