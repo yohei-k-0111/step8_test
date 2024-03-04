@@ -33,7 +33,7 @@
             </div> -->
             <!-- 絞り込みボタン -->
             <div class="search__item">
-                <button id="btnSearchItem" class="btn search__item--btn" type="submit">絞り込み</button>
+                <button id="btnSearchItem" class="btn search__item--btn" type="button">絞り込み</button>
             </div>
         </form>
     </div>
@@ -57,9 +57,9 @@
                     <th>操作</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody  id="table_replace">
             @foreach ($products as $product)
-                <tr>
+                <tr id="tr_replace">
                     <td>{{ $product->id }}</td>
                     <td>{{ $product->product_name }}</td>
                     <td>{{ $product->company->company_name }}</td>

@@ -75,25 +75,29 @@
 
         $('#btnSearchItem').on('click', function() {
 
-            e.preventDefault(); //追加 これまでの通常処理をキャンセル
-            var searchWord = $(#txtSearchProduct).val(); //$('#txtSearchProduct')id指定でもできそう
-
+            // e.preventDefault(); //追加 これまでの通常処理をキャンセルaa
+            var searchWord = $('input[name="search"]').val(); //$('#txtSearchProduct')id指定でもできそう
+            console.log("クリック");
+            console.log(searchWord);
             $.ajax({
 
                 url: "{{ route('products.index') }}",
                 method: "GET",
-                data: { 'searchWord' : searchWord }, //サーバーに送りたいデータ：検索入力値（valueの中身をvar変数に置き換えた）
-                dataType: "json",
+                data: { "search" : searchWord }, //サーバーに送りたいデータ：検索入力値（valueの中身をvar変数に置き換えた）
+                dataType: "html",
 
-            }).done(function(res){
+            }).done(function(products){
 
-                dump($res.products);
-                console.log($res.products);
-
-            }).faile(function(){
-
+                console.log("成功");
+                console.log(products);
+                if(products !== null){
+                    var replace = $("#table_replace").find("#tr_replace");
+                    $("#tr_replace").html(replace);
+                    console.log(replace);
+                };
+            }).fail(function(products){
+                console.log("失敗");
                 alert('通信が失敗しました');
-
             });
 
         });

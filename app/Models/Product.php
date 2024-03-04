@@ -36,7 +36,7 @@ class Product extends Model
         $query = Product::query();
         $companies = Company::groupBy('company_name')->get('company_name');
         // キーワードから検索処理
-        $searchWord = $request->input('searchWord');
+        $searchWord = $request->get('search');
         if ($searchWord) {
         //$searchWord に値がある場合、検索処理を実行
             $query->where('product_name', 'LIKE', "%{$searchWord}%");
