@@ -92,7 +92,7 @@
                 console.log(products);
                 if(products !== null){
                     var replace = $("#table_replace").find("#tr_replace");
-                    replace.html(replace);
+                    $("#tr_replace").html(replace);
                     console.log(replace);
                 };
             }).fail(function(products){
