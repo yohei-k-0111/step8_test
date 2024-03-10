@@ -23,14 +23,14 @@
                 <input id="txtSearchProduct" class="form search__item--form" type="text" name="search"
                 placeholder="商品名" value="{{ request('search') }}">
             </div>
-            <!-- <div class="search__item">
-                <select id="drpSearchCompany" class="form search__item--form"name="select">
+            <div class="search__item">
+                <select id="drpSearchCompany" class="form search__item--form" name="select">
                     <option value="">メーカー選択</option>
                 @foreach($companies as $company)
                     <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                 @endforeach
                 </select>
-            </div> -->
+            </div>
             <!-- 絞り込みボタン -->
             <div class="search__item">
                 <button id="btnSearchItem" class="btn search__item--btn" type="button">絞り込み</button>
@@ -57,9 +57,9 @@
                     <th>操作</th>
                 </tr>
             </thead>
-            <tbody  id="table_replace">
+            <tbody id="tableReplace">
             @foreach ($products as $product)
-                <tr id="tr_replace">
+                <tr>
                     <td>{{ $product->id }}</td>
                     <td>{{ $product->product_name }}</td>
                     <td>{{ $product->company->company_name }}</td>
@@ -69,11 +69,10 @@
                     <td><img src="{{ asset($product->img_path) }}" alt="商品画像" width="100"></td>
                     <td>
                         <a href="{{ route('products.show', $product) }}" class="btn btn__info">詳細表示</a>
-                        <form method="POST" action="{{ route('products.destroy', $product) }}">
+                        <form id="dltProduct" method="POST" data-productId="{{ $product->id }}" action="{{ route('products.destroy', $product->id) }}">
                             @csrf
                             @method('DELETE')
-                            <button id="btnDltProduct" type="submit" class="btn btn__dlt"
-                            onclick="return confirm('削除しますか?');">削除</button>
+                            <button id="btnDltProduct" type="button" class="btn btn__dlt" onclick="return confirm('削除しますか?');">削除</button>
                         </form>
                     </td>
                 </tr>

@@ -163,7 +163,8 @@ class ProductController extends Controller
 
         try {
             // 削除処理呼び出し
-           // テーブルを指定し、idで商品を検索する。
+           // Productテーブルを指定し、idで商品を検索する。
+            // $id = $id[product_id];
             $product = Product::find($id);
             // 商品削除
             $product->delete();
