@@ -9,7 +9,6 @@
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <!-- <script src="{{ asset('js/search.js') }}"></script> -->
 
     <title>{{ config('app.name', '商品管理システム') }}</title>
 
@@ -75,35 +74,81 @@
 
         $('#btnSearchItem').on('click', function() {
 
-            // e.preventDefault(); //追加 これまでの通常処理をキャンセルaa
-            var searchWord = $('input[name="search"]').val(); //$('#txtSearchProduct')id指定でもできそう
-            console.log("クリック");
-            console.log(searchWord);
+            var search_word = $('input[name="search"]').val(); //商品検索窓の入力値"value"の値
+            var select_word = $('select').val(); //メーカー検索窓の入力値"value"の値
+            console.log("絞込み検索クリック"); //検索実行確認
+            console.log(search_word); //検索ワード確認
+            console.log(select_word); //検索ワード確認
+
             $.ajax({
 
-                url: "{{ route('products.index') }}",
-                method: "GET",
-                data: { "search" : searchWord }, //サーバーに送りたいデータ：検索入力値（valueの中身をvar変数に置き換えた）
-                dataType: "html",
+                url: "{{ route('products.index') }}", //リクエスト先のurl
+                method: "GET", //送信方式
+                data: {
+                    'search' : search_word,
+                    'select' : select_word
+                }, //サーバーに送りたいデータ：検索入力値（valueの中身をvar変数に置き換えた）
+                dataType: "html", //またはjson
 
             }).done(function(products){
 
-                console.log("成功");
-                console.log(products);
-                if(products !== null){
-                    var replace = $("#table_replace").find("#tr_replace");
-                    $("#tr_replace").html(replace);
-                    console.log(replace);
-                };
-            }).fail(function(products){
-                console.log("失敗");
-                alert('通信が失敗しました');
-            });
+                console.log("成功"); //データ受け渡し成功確認
+                console.log(products); //controllerから受け取ったindex.blade.php画面全体確認
+                var replace = $(products).find("#tableReplace"); //絞り込まれたテーブル部分
+                $("#tableReplace").replaceWith(replace); //元のテーブルからreplaceに置き換える
 
+            }).fail(function(products){
+
+                console.log("失敗"); //データ受け渡し失敗確認
+                alert('通信が失敗しました'); //失敗時の警告表示
+
+            });
         });
 
-        // 今回は、bladeファイル内に記述してるのでroute()関数が使用できますが、jsファイルに区別して記述する場合もあります。
-        // その場合は、route()関数は使用できないので、別の方法でURLを渡す必要があるので注意してください。
+        $('#btnDltProduct').on('click', function() {
+
+            var delete_confirm = confirm('本当に削除しますか？');
+
+            //　メッセージをOKした時（true)の場合、次に進みます 
+            if(delete_confirm == true) {
+                
+                var product_id = $('#dltProduct').attr('data-productId');
+                console.log("削除クリック"); //検索実行確認
+                console.log(product_id); //検索ワード確認
+
+                //attr()」は、HTML要素の属性を取得したり設定することができるメソッドです
+                //今回はinputタグの"data-user_id"という属性の値を取得します
+                //"data-user_id"にはレコードの"id"が設定されているので
+                // 削除するレコードを指定するためのidの値をここで取得します
+                    
+                $.ajax({
+
+                    url: "{{ route('products.destroy','product_id') }}", //userID にはレコードのIDが代入されています
+                    method: "POST",
+                    dataType: "html",
+                    data: {'product_id' : product_id}, //削除対象の商品idを送信する
+
+                }).done(function(product_delete){
+
+                    console.log("成功"); //データ受け渡し成功確認
+                    console.log(product_delete); //controllerから受け取ったindex.blade.php画面全体確認
+                    var replace = $(product_delete).find("#table_replace"); //対象が削除されたテーブル部分
+                    $("#table_replace").replaceWith(replace); //元のテーブルからreplaceに置き換える
+
+                }).fail(function(product_delete){
+
+                    console.log("失敗"); //データ受け渡し失敗確認
+                    alert('通信が失敗しました'); //失敗時の警告表示
+
+                });
+                            
+            //”削除しても良いですか”のメッセージで”いいえ”を選択すると次に進み処理がキャンセルされます
+            } else {
+                (function(e) {
+                e.preventDefault()
+                });
+            };
+        });
     </script>
 </body>
 </html>

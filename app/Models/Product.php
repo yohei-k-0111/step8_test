@@ -32,20 +32,21 @@ class Product extends Model
 
     // ProductController の　public function index(Request $request)メソッドの内容
     public function getIndex($request) {
-       // 指定したモデルに関連するテーブルから全てのレコードを取得する
+        // 指定したモデルに関連するテーブルから全てのレコードを取得する
         $query = Product::query();
+        // 指定したカラムから複数の値を重複せず取得する
         $companies = Company::groupBy('company_name')->get('company_name');
-        // キーワードから検索処理
-        $searchWord = $request->get('search');
-        if ($searchWord) {
-        //$searchWord に値がある場合、検索処理を実行
-            $query->where('product_name', 'LIKE', "%{$searchWord}%");
+        // キーワードから検索処理  ※ $search → $search_wordに変更
+        $search_word = $request->get('search');
+        if ($search_word) {
+        //$search_word に値がある場合、検索処理を実行
+            $query->where('product_name', 'LIKE', "%{$search_word}%");
         }
 
-        $select = $request->input('select');
-        if ($select) {
-        //$select に値がある場合、検索処理を実行
-            $query->where('company_id', $select);
+        $select_word = $request->get('select');
+        if ($select_word) {
+        //$select に値がある場合、検索処理を実行 ※ $select → $select_wordに変更
+            $query->where('company_id', $select_word);
         }
         $products = $query->get();
         return $products;
