@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function index(Request $request) {
         $product = new Product;
         $products = $product->getIndex($request);
-        $companies = Company::all();
+        $companies = Company::all(); //Companyモデルを通してcompaniesテーブルの全レコードを取得する
         return view('products.index', compact('companies', 'products'));
     }
 
@@ -148,34 +148,28 @@ class ProductController extends Controller
          '商品情報が更新されました');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     // 商品情報を削除するメソッド
-    //指定されたIDで商品をデータベースから検索し、その結果を $product に割り当てる。
-    public function destroy($id) {
+    //指定されたID（非同期処理でproduct_idとして送られてきた）で商品をデータベースから検索し、その結果を $product に割り当てる。
+    public function destroy(Request $request) {
 
         // トランザクション開始
         DB::beginTransaction();
 
         try {
-            // 削除処理呼び出し
-           // Productテーブルを指定し、idで商品を検索する。
-            // $id = $id[product_id];
-            $product = Product::find($id);
+            // Requestにある送信データから削除対象を取得
+            $product_id = $request->get('product_id');
+            $product = new Product;
+           // モデルを通してProductテーブルを指定し、idで商品を検索する。
+            $product = $product->findOrFail($product_id);
             // 商品削除
             $product->delete();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             return back();
+            //トランザクションで削除処理失敗時は戻し処理
         }
-
-        // 処理後、商品一覧画面に戻る。
-        return redirect('/products')->with('dlt_message', '商品情報が削除されました');
-        //URLの/productsにリダイレクト
+        // 以下、非同期処理により不要。dlt_messageはajaxのdone処理で表示させる。
+        // return redirect('products.index')->with('dlt_message', '商品情報が削除されました');
     }
 }

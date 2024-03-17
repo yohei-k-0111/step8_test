@@ -4,18 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable; // ソート機能のためSortableパッケージ追加
 
 class Product extends Model
 {
     use HasFactory; // ダミーレコードを代入する機能を使う
+    use Sortable; // Sortable機能追加
+
+    //ソート対象指定：商品ID、商品名、価格、在庫数、メーカー
+    public $sortable = [
+        'id',
+        'product_name',
+        'company_id',
+        'price',
+        'stock',
+    ];
 
     // 以下の情報（属性）を一度に保存したり変更したりできる設定
     // $fillable を設定しないと、Laravelはセキュリティリスクを避けるために、この一括代入をブロックする。
     protected $fillable = [
         'product_name',
+        'company_id',
         'price',
         'stock',
-        'company_id',
         'comment',
         'img_path',
     ];
@@ -33,7 +44,8 @@ class Product extends Model
     // ProductController の　public function index(Request $request)メソッドの内容
     public function getIndex($request) {
         // 指定したモデルに関連するテーブルから全てのレコードを取得する
-        $query = Product::query();
+        // sortable() を宣言する（ソート処理のため追加）
+        $query = Product::query()->sortable();
         // 指定したカラムから複数の値を重複せず取得する
         $companies = Company::groupBy('company_name')->get('company_name');
         // キーワードから検索処理  ※ $search → $search_wordに変更
@@ -42,17 +54,35 @@ class Product extends Model
         //$search_word に値がある場合、検索処理を実行
             $query->where('product_name', 'LIKE', "%{$search_word}%");
         }
-
-        $select_word = $request->get('select');
-        if ($select_word) {
-        //$select に値がある場合、検索処理を実行 ※ $select → $select_wordに変更
-            $query->where('company_id', $select_word);
+        // メーカーから検索処理 ※ $select → $select_idに変更
+        $select_id = $request->get('select');
+        if ($select_id) {
+            $query->where('company_id', $select_id);
         }
+        // 価格（下限・上限）から検索処理
+        $search_p_lower = $request->get('price_lower');
+        if ($search_p_lower) {
+            $query->where('price', '>=', $search_p_lower);
+        }
+        $search_p_upper = $request->get('price_upper');
+        if ($search_p_upper) {
+            $query->where('price', '<=', $search_p_upper);
+        }
+        // 在庫数（下限・上限）から検索処理
+        $search_s_lower = $request->get('stock_lower');
+        if ($search_s_lower) {
+            $query->where('stock', '>=', $search_s_lower);
+        }
+        $search_s_upper = $request->get('stock_upper');
+        if ($search_s_upper) {
+            $query->where('stock', '<=', $search_s_upper);
+        }
+
         $products = $query->get();
         return $products;
     }
 
-    // ProductController の　public function store(Request $request)メソッドの内容
+    // ProductControllerのpublic function store(Request $request)の内容
     // 送られたデータをデータベースに保存する
     public function getStore($request) {
 
@@ -78,7 +108,7 @@ class Product extends Model
         $product->save();
     }
 
-    // ProductController の　public function update(Request $request, $id)メソッドの内容
+    // ProductControllerのpublic function update(Request $request, $id)の内容
     public function getUpdate($request, $id) {
         
         // テーブルを指定し、idで商品を検索する。

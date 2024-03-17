@@ -19,6 +19,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
 
+    protected $namespace = 'App\Http\Controllers'; //追記
+
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
      *
@@ -30,10 +32,12 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             Route::middleware('api')
+                ->namespace($this->namespace) //追記
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
+                ->namespace($this->namespace) //追記
                 ->group(base_path('routes/web.php'));
         });
     }

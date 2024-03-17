@@ -32,10 +32,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-// Auth::routes();はLaravelが提供している便利な機能で一般的な認証に関するルーティングを自動的に定義してくれます
-// この一行でログインやログアウトパスワードのリセット、新規ユーザー登録などのためのルートが作成されます
-// つまりログイン画面に用意されたビューのリンク先がこの1行で済みます
-
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('products', ProductController::class);
 });

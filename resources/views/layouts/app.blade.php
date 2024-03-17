@@ -75,10 +75,15 @@
         $('#btnSearchItem').on('click', function() {
 
             var search_word = $('input[name="search"]').val(); //商品検索窓の入力値"value"の値
-            var select_word = $('select').val(); //メーカー検索窓の入力値"value"の値
-            console.log("絞込み検索クリック"); //検索実行確認
+            var select_id = $('select').val(); //メーカー検索窓の入力値"value"の値
+            var search_p_lower = $('input[name="price_lower"]').val(); //価格下限検索の入力値"value"の値
+            var search_p_upper = $('input[name="price_upper"]').val(); 
+            var search_s_lower = $('input[name="stock_lower"]').val(); 
+            var search_s_upper = $('input[name="stock_upper"]').val(); //在庫上限検索の入力値"value"の値
             console.log(search_word); //検索ワード確認
-            console.log(select_word); //検索ワード確認
+            console.log(select_id); //検索ワード確認
+            console.log(search_p_lower, search_p_upper); //価格検索確認
+            console.log(search_s_lower, search_s_upper); //在庫検索確認
 
             $.ajax({
 
@@ -86,9 +91,13 @@
                 method: "GET", //送信方式
                 data: {
                     'search' : search_word,
-                    'select' : select_word
+                    'select' : select_id,
+                    'price_lower' : search_p_lower,
+                    'price_upper' : search_p_upper,
+                    'stock_lower' : search_s_lower,
+                    'stock_upper' : search_s_upper
                 }, //サーバーに送りたいデータ：検索入力値（valueの中身をvar変数に置き換えた）
-                dataType: "html", //またはjson
+                dataType: "html",
 
             }).done(function(products){
 
@@ -105,35 +114,37 @@
             });
         });
 
-        $('#btnDltProduct').on('click', function() {
-
+        $('.btn__dlt').on('click', function(e) {
+            //foreachでタブが複製されるためidではなくclass'btn__dlt'指定が必要
+            e.preventDefault(); //通常の処理を制御する
             var delete_confirm = confirm('本当に削除しますか？');
 
             //　メッセージをOKした時（true)の場合、次に進みます 
             if(delete_confirm == true) {
-                
-                var product_id = $('#dltProduct').attr('data-productId');
+                var click_ele = $(this);
+                //$(this)で、foreachの配列の中から、クリックしたthisレコードを指定
+                var product_id = click_ele.attr('data-productId');
+                //attr()メソッドで、HTML要素の属性を取得したり設定する
+                // 'data-productId'自作プロパティで送信したいデータを入れる
                 console.log("削除クリック"); //検索実行確認
                 console.log(product_id); //検索ワード確認
 
-                //attr()」は、HTML要素の属性を取得したり設定することができるメソッドです
-                //今回はinputタグの"data-user_id"という属性の値を取得します
-                //"data-user_id"にはレコードの"id"が設定されているので
-                // 削除するレコードを指定するためのidの値をここで取得します
-                    
                 $.ajax({
 
-                    url: "{{ route('products.destroy','product_id') }}", //userID にはレコードのIDが代入されています
+                    url: "{{ route('products.destroy', 'product_id') }}",
                     method: "POST",
                     dataType: "html",
-                    data: {'product_id' : product_id}, //削除対象の商品idを送信する
+                    data: {
+                        'product_id' : product_id,  
+                        '_method': 'DELETE'
+                    }, //削除対象の商品idとDELETEメソッドを送信する（method:はPOSTかGETしか送れない）
 
                 }).done(function(product_delete){
 
                     console.log("成功"); //データ受け渡し成功確認
-                    console.log(product_delete); //controllerから受け取ったindex.blade.php画面全体確認
-                    var replace = $(product_delete).find("#table_replace"); //対象が削除されたテーブル部分
-                    $("#table_replace").replaceWith(replace); //元のテーブルからreplaceに置き換える
+                    click_ele.parents('tr').remove(); //DBから削除したレコードのテーブル部分を削除
+                    $("#msg").html("<div class='alert alert__danger'><a>商品情報が削除されました</a></div>"); 
+                    //削除メッセージを、HTML()で要素を追加する（destroyメソッドの代替）
 
                 }).fail(function(product_delete){
 
@@ -141,10 +152,10 @@
                     alert('通信が失敗しました'); //失敗時の警告表示
 
                 });
-                            
-            //”削除しても良いですか”のメッセージで”いいえ”を選択すると次に進み処理がキャンセルされます
+
             } else {
                 (function(e) {
+                //”本当に削除しますか？”のメッセージで”いいえ”を選択した場合、キャンセル処理される
                 e.preventDefault()
                 });
             };
