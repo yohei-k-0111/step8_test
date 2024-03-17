@@ -4,12 +4,8 @@
 <div class="container">
     <h1>商品情報一覧画面</h1>
 
-@if (session('dlt_message'))
-        <div class="alert alert__danger">
-            {{ session('dlt_message') }}
-        </div>
-@endif
-
+    <div id="msg"></div>
+    
     <a href="{{ route('products.create') }}" class="btn btn__register">商品新規登録</a>
 
     <!-- 検索フォーム -->
@@ -19,22 +15,44 @@
         
         <form id="searchProduct" action="{{ route('products.index') }}" method="GET">
         @csrf
-            <div class="search__item">
-                <input id="txtSearchProduct" class="form search__item--form" type="text" name="search"
-                placeholder="商品名" value="{{ request('search') }}">
-            </div>
-            <div class="search__item">
-                <select id="drpSearchCompany" class="form search__item--form" name="select">
-                    <option value="">メーカー選択</option>
-                @foreach($companies as $company)
-                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-                @endforeach
-                </select>
-            </div>
-            <!-- 絞り込みボタン -->
-            <div class="search__item">
-                <button id="btnSearchItem" class="btn search__item--btn" type="button">絞り込み</button>
-            </div>
+            <ul>
+                <li>
+                    <!-- 商品名検索 -->
+                    <div class="search__item">
+                        <input id="txtSearchProduct" class="form search__item--form" type="text" name="search"
+                        placeholder="商品名" value="{{ request('search') }}">
+                    </div>
+                    <!-- メーカー検索 -->
+                    <div class="search__item">
+                        <select id="drpSearchCompany" class="form search__item--form" name="select">
+                            <option value="">メーカー選択</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                        @endforeach
+                        </select>
+                    </div>
+                </li>
+                <li>
+                    <!-- 価格検索（下限値・上限値） -->
+                    <div class="search__item">
+                        <input placeholder="価格の下限値" type="text" name="price_lower" id="lowerSearchPrice" class="form search__item--form">
+                        <input placeholder="価格の上限値" type="text" name="price_upper" id="upperSearchPrice" class="form search__item--form">
+                    </div>
+                </li>
+                <li>
+                    <!-- 在庫数検索（下限値・上限値） -->
+                    <div class="search__item">
+                        <input placeholder="在庫の下限値" type="text" name="stock_lower" id="lowerSearchStock" class="form search__item--form">
+                        <input placeholder="在庫の上限値" type="text" name="stock_upper" id="upperSearchStock" class="form search__item--form">
+                    </div>
+                </li>
+                <li>
+                    <!-- 絞り込みボタン -->
+                    <div class="search__item">
+                        <button id="btnSearchItem" class="btn search__item--btn" type="button">絞り込み</button>
+                    </div>
+                </li>
+            </ul>
         </form>
     </div>
 
@@ -47,11 +65,11 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>商品ID</th>
-                    <th>商品名</th>
-                    <th>メーカー</th>
-                    <th>価格</th>
-                    <th>在庫数</th>
+                    <th>@sortablelink('id', 'I商品ID▼')</th>
+                    <th>@sortablelink('product_name', '商品名▼')</th>
+                    <th>@sortablelink('company_name', 'メーカー▼')</th>
+                    <th>@sortablelink('price', '価格▼')</th>
+                    <th>@sortablelink('stock', '在庫数▼')</th>
                     <th>コメント</th>
                     <th>商品画像</th>
                     <th>操作</th>
@@ -69,10 +87,10 @@
                     <td><img src="{{ asset($product->img_path) }}" alt="商品画像" width="100"></td>
                     <td>
                         <a href="{{ route('products.show', $product) }}" class="btn btn__info">詳細表示</a>
-                        <form id="dltProduct" method="POST" data-productId="{{ $product->id }}" action="{{ route('products.destroy', $product->id) }}">
+                        <form class="dlt__product" method="POST" action="{{ route('products.destroy', $product) }}">
                             @csrf
                             @method('DELETE')
-                            <button id="btnDltProduct" type="button" class="btn btn__dlt" onclick="return confirm('削除しますか?');">削除</button>
+                            <input type="button" class="btn btn__dlt" data-productId="{{ $product }}" value="削除">
                         </form>
                     </td>
                 </tr>
