@@ -45,7 +45,7 @@ class Product extends Model
     public function getIndex($request) {
         // 指定したモデルに関連するテーブルから全てのレコードを取得する
         // sortable() を宣言する（ソート処理のため追加）
-        $query = Product::query()->sortable();
+        $query = Product::query();
         // 指定したカラムから複数の値を重複せず取得する
         $companies = Company::groupBy('company_name')->get('company_name');
         // キーワードから検索処理  ※ $search → $search_wordに変更
@@ -78,7 +78,7 @@ class Product extends Model
             $query->where('stock', '<=', $search_s_upper);
         }
 
-        $products = $query->get();
+        $products = $query->sortable()->get();
         return $products;
     }
 

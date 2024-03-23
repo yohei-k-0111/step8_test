@@ -62,7 +62,7 @@
     <!-- 商品情報一覧 -->
     <div class="products">
         <h2>商品情報</h2>
-        <table class="table table-striped">
+        <table id="tableReplace" class="table table-striped">
             <thead>
                 <tr>
                     <th>@sortablelink('id', 'I商品ID▼')</th>
@@ -75,7 +75,7 @@
                     <th>操作</th>
                 </tr>
             </thead>
-            <tbody id="tableReplace">
+            <tbody>
             @foreach ($products as $product)
                 <tr>
                     <td>{{ $product->id }}</td>
@@ -87,10 +87,10 @@
                     <td><img src="{{ asset($product->img_path) }}" alt="商品画像" width="100"></td>
                     <td>
                         <a href="{{ route('products.show', $product) }}" class="btn btn__info">詳細表示</a>
-                        <form class="dlt__product" method="POST" action="{{ route('products.destroy', $product) }}">
+                        <form class="dlt__product" method="POST" action="{{ route('products.destroy', $product->id) }}">
                             @csrf
                             @method('DELETE')
-                            <input type="button" class="btn btn__dlt" data-productId="{{ $product }}" value="削除">
+                            <input type="button" class="btn btn__dlt" data-productId="{{ $product->id }}" value="削除">
                         </form>
                     </td>
                 </tr>

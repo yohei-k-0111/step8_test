@@ -101,18 +101,20 @@
 
             }).done(function(products){
 
-                console.log("成功"); //データ受け渡し成功確認
+                console.log("検索成功"); //データ受け渡し成功確認
                 console.log(products); //controllerから受け取ったindex.blade.php画面全体確認
-                var replace = $(products).find("#tableReplace"); //絞り込まれたテーブル部分
-                $("#tableReplace").replaceWith(replace); //元のテーブルからreplaceに置き換える
+                var replace = $(products).find('#tableReplace'); //検索条件を保持したヘッダーとテーブルを抽出
+                $('#tableReplace').replaceWith(replace); //元のテーブルからreplaceに置き換える
 
             }).fail(function(products){
 
-                console.log("失敗"); //データ受け渡し失敗確認
+                console.log("検索失敗"); //データ受け渡し失敗確認
                 alert('通信が失敗しました'); //失敗時の警告表示
 
             });
         });
+
+        // var replace_dltbtn = $(replace).find('.btn__dlt');
 
         $('.btn__dlt').on('click', function(e) {
             //foreachでタブが複製されるためidではなくclass'btn__dlt'指定が必要
@@ -141,14 +143,14 @@
 
                 }).done(function(product_delete){
 
-                    console.log("成功"); //データ受け渡し成功確認
+                    console.log("削除成功"); //データ受け渡し成功確認
                     click_ele.parents('tr').remove(); //DBから削除したレコードのテーブル部分を削除
                     $("#msg").html("<div class='alert alert__danger'><a>商品情報が削除されました</a></div>"); 
                     //削除メッセージを、HTML()で要素を追加する（destroyメソッドの代替）
 
                 }).fail(function(product_delete){
 
-                    console.log("失敗"); //データ受け渡し失敗確認
+                    console.log("削除失敗"); //データ受け渡し失敗確認
                     alert('通信が失敗しました'); //失敗時の警告表示
 
                 });
