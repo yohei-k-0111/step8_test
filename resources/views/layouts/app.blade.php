@@ -109,8 +109,8 @@
                 var replace = $(products).find("#tableReplace"); //絞り込まれたテーブル部分
                 $("#tableReplace").replaceWith(replace); //元のテーブルからreplaceに置き換える
 
-                $(document).on('click', '.btn__dlt', deleteProduct); //関数deleteProductの処理内容は下記に記載する
-                //非同期通信により削除ボタンのイベントハンドラのバインドが無効になったため再設定する
+                $(document).on('click', '.btn__dlt', deleteProduct); //関数deleteProductは下記②に記載する
+                //非同期通信により削除ボタンのイベントハンドラのバインドが無効になるため再設定する
                 //foreachでタブが複製されるためidではなくclass'btn__dlt'指定が必要
 
             }).fail(function(products) {
@@ -123,53 +123,58 @@
 
     });
 
-        //削除ボタンのクリックイベント処理内容　→　検索非同期通信のajax-done処理にてイベントを再度設定する
-        function deleteProduct(e) {
-            e.preventDefault(); //通常の処理を制御する
-            var delete_confirm = confirm('本当に削除しますか？');
+    $(function() {
+        // 削除ボタンの下記①の通常イベント処理　※検索を行わない状態でのイベント発生時（指摘により追記）
+        $('.btn__dlt').on('click', deleteProduct);
+    });
 
-            //　メッセージをOKした時（true)の場合、次に進みます 
-            if(delete_confirm == true) {
+    //削除ボタンのイベント処理内容　①通常時と②検索非同期通信時のdone内にてイベントを設定する
+    function deleteProduct(e) {
+        e.preventDefault(); //通常の処理を制御する
+        var delete_confirm = confirm('本当に削除しますか？');
 
-                var click_ele = $(this);
-                //$(this)で、foreachの配列の中から、クリックしたthisレコードを指定
-                var product_id = click_ele.attr('data-productId');
-                //attr()メソッドで、HTML要素の属性を取得したり設定する
-                // 'data-productId'自作プロパティで送信したいデータを入れる
-                console.log("削除クリック"); //検索実行確認
-                console.log(product_id); //検索ワード確認
+        //　メッセージをOKした時（true)の場合、次に進みます 
+        if(delete_confirm == true) {
 
-                $.ajax({
+            var click_ele = $(this);
+            //$(this)で、foreachの配列の中から、クリックしたthisレコードを指定
+            var product_id = click_ele.attr('data-productId');
+            //attr()メソッドで、HTML要素の属性を取得したり設定する
+            // 'data-productId'自作プロパティで送信したいデータを入れる
+            console.log("削除クリック"); //検索実行確認
+            console.log(product_id); //検索ワード確認
 
-                    url: "{{ route('products.destroy', 'product_id') }}",
-                    method: "POST",
-                    dataType: "html",
-                    data: {
-                        'product_id' : product_id,
-                        '_method' : 'DELETE'
-                    }, //削除対象の商品idとDELETEメソッドを送信する（method:はPOSTかGETしか送れない）
+            $.ajax({
 
-                }).done(function(product_delete) {
+                url: "{{ route('products.destroy', 'product_id') }}",
+                method: "POST",
+                dataType: "html",
+                data: {
+                    'product_id' : product_id,
+                    '_method' : 'DELETE'
+                }, //削除対象の商品idとDELETEメソッドを送信する（method:はPOSTかGETしか送れない）
 
-                    console.log("成功"); //データ受け渡し成功確認
-                    click_ele.parents('tr').remove(); //DBから削除したレコードのテーブル部分を削除
-                    $("#msg").html("<div class='alert alert__danger'><a>商品情報が削除されました</a></div>");
-                    //削除メッセージを、HTML()で要素を追加する（destroyメソッドの代替）
+            }).done(function(product_delete) {
 
-                }).fail(function(product_delete) {
+                console.log("成功"); //データ受け渡し成功確認
+                click_ele.parents('tr').remove(); //DBから削除したレコードのテーブル部分を削除
+                $("#msg").html("<div class='alert alert__danger'><a>商品情報が削除されました</a></div>");
+                //削除メッセージを、HTML()で要素を追加する（destroyメソッドの代替）
 
-                    console.log("失敗"); //データ受け渡し失敗確認
-                    alert('通信が失敗しました'); //失敗時の警告表示
+            }).fail(function(product_delete) {
 
-                });
+                console.log("失敗"); //データ受け渡し失敗確認
+                alert('通信が失敗しました'); //失敗時の警告表示
 
-            } else {
-                (function(e) {
-                //”本当に削除しますか？”のメッセージで”いいえ”を選択した場合、キャンセル処理される
-                e.preventDefault()
-                });
-            }
+            });
+
+        } else {
+            (function(e) {
+            //”本当に削除しますか？”のメッセージで”いいえ”を選択した場合、キャンセル処理される
+            e.preventDefault()
+            });
         }
+    }
     </script>
 </body>
 </html>
